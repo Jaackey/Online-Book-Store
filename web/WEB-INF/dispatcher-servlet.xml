@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!-- was: <?xml version="1.0" encoding="UTF-8"?> -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+    <bean class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping"/>
+
+    <!--
+    Most controllers will use the ControllerClassNameHandlerMapping above, but
+    for the index controller we are using ParameterizableViewController, so we must
+    define an explicit mapping for it.
+    -->
+    <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="mappings">
+            <props>
+                <prop key="index.htm">indexController</prop>
+                <prop key="user.htm">userController</prop>
+                <prop key="book.htm">bookController</prop>
+                <prop key="record.htm">recordController</prop>
+                <prop key="order.htm">orderController</prop>
+                <prop key="message.htm">messageController</prop>
+                <prop key="process.htm">processController</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="userDao" class="dao.UserDao">
+    </bean>
+    
+    <bean id="bookDao" class="dao.BookDao">
+    </bean>
+    
+    <bean id="recordDao" class="dao.RecordDao">
+    </bean>
+    
+    <bean id="orderDao" class="dao.OrderDao">
+    </bean>
+    
+    <bean id="messageDao" class="dao.MessageDao">
+    </bean>
+
+    <bean id="viewResolver"
+          class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+          p:prefix="/WEB-INF/jsp/"
+          p:suffix=".jsp" />
+
+    <!--
+    The index controller.
+    -->
+    <bean name="indexController"
+          class="org.springframework.web.servlet.mvc.ParameterizableViewController"
+          p:viewName="index" />
+
+    <bean name="userController" class="controller.UserController">
+        <property name="userDao" ref="userDao" />
+    </bean>
+    
+    <bean name="bookController" class="controller.BookController">
+        <property name="bookDao" ref="bookDao" />
+        <property name="recordDao" ref="recordDao" />
+        <property name="orderDao" ref="orderDao" />
+        <property name="userDao" ref="userDao" />
+    </bean>
+    
+    <bean name="recordController" class="controller.RecordController">
+        <property name="recordDao" ref="recordDao" />
+    </bean>
+    
+    <bean name="orderController" class="controller.OrderController">
+        <property name="orderDao" ref="orderDao" />
+    </bean>
+    
+    <bean name="messageController" class="controller.MessageController">
+        <property name="messageDao" ref="messageDao" />
+    </bean>
+    
+    <bean name="processController" class="controller.ProcessController">
+        <property name="messageDao" ref="messageDao" />
+    </bean>
+            
+</beans>
